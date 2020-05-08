@@ -1,3 +1,4 @@
 {
-  "mongoURI": "mongodb+srv://callum:callum@cluster0-3mvk3.mongodb.net/test?retryWrites=true&w=majority"
+  "mongoURI": "mongodb+srv://callum:callum@cluster0-3mvk3.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "secrettoken"
 }
