@@ -6,6 +6,7 @@ import {
   AUTH_ERROR,
   LOGIN_FAIL,
   LOGIN_SUCCESS,
+  LOGOUT,
 } from "./constants";
 import { setAlert } from "./alert";
 import setAuthorisationToken from "../utilities/setAuthorisationToken";
@@ -93,4 +94,9 @@ export const register = ({ name, email, password }) => async (dispatch) => {
       type: REGISTRATION_FAIL,
     });
   }
+};
+// Logout / Clear Profile
+export const logout = () => (dispatch) => {
+  //dispatch({ type: CLEAR_PROFILE });
+  dispatch({ type: LOGOUT });
 };
