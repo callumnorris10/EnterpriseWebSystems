@@ -1,13 +1,13 @@
 import React, { Fragment, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { register } from "../../actions/auth";
 
 import { setAlert } from "../../actions/alert";
 import PropTypes from "prop-types";
 
-export const Register = ({ setAlert, register }) => {
+export const Register = ({ setAlert, register, isAuthenticated }) => {
   const [registerData, setRegisterData] = useState({
     name: "",
     email: "",
@@ -47,6 +47,10 @@ export const Register = ({ setAlert, register }) => {
       //   }
     }
   };
+
+  if (isAuthenticated) {
+    return <Redirect to="/dashboard" />;
+  }
 
   return (
     <Fragment>
@@ -103,8 +107,13 @@ export const Register = ({ setAlert, register }) => {
     </Fragment>
   );
 };
+
 Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
   register: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
 };
-export default connect(null, { setAlert, register })(Register);
+const linkStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+export default connect(linkStateToProps, { setAlert, register })(Register);

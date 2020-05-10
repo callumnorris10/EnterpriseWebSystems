@@ -1,4 +1,11 @@
-import { REGISTRATION_SUCCESS, REGISTRATION_FAIL } from "../actions/constants";
+import {
+  REGISTRATION_SUCCESS,
+  REGISTRATION_FAIL,
+  USER_LOADED,
+  AUTH_ERROR,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+} from "../actions/constants";
 
 const initialState = {
   token: localStorage.getItem("token"),
@@ -19,7 +26,15 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
         loading: false,
       };
-
+    case LOGIN_SUCCESS:
+      return {
+        ...state,
+        ...payload,
+        isAuthenticated: true,
+        loading: false,
+      };
+    case LOGIN_FAIL:
+    case AUTH_ERROR:
     case REGISTRATION_FAIL:
       localStorage.removeItem("token");
       return {
@@ -28,6 +43,14 @@ export default function (state = initialState, action) {
         isAuthenticated: false,
         loading: false,
       };
+    case USER_LOADED:
+      return {
+        ...state,
+        isAuthenticated: true,
+        loading: false,
+        user: payload,
+      };
+
     default:
       return state;
   }
