@@ -7,6 +7,7 @@ import {
   LOGIN_FAIL,
   LOGIN_SUCCESS,
   LOGOUT,
+  CLEAR_PROFILE,
 } from "./constants";
 import { setAlert } from "./alert";
 import setAuthorisationToken from "../utilities/setAuthorisationToken";
@@ -97,6 +98,6 @@ export const register = ({ name, email, password }) => async (dispatch) => {
 };
 // Logout / Clear Profile
 export const logout = () => (dispatch) => {
-  //dispatch({ type: CLEAR_PROFILE });
+  dispatch({ type: CLEAR_PROFILE });
   dispatch({ type: LOGOUT });
 };
