@@ -1,9 +1,14 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { createProfile } from "../../actions/profile";
+import { createProfile, getCurrentProfile } from "../../actions/profile";
 import { Link, withRouter } from "react-router-dom";
-const CreateProfile = ({ createProfile }) => {
+const EditProfile = ({
+  profile: { profile, loading },
+  createProfile,
+  getCurrentProfile,
+  history,
+}) => {
   const [registerData, setRegisterData] = useState({
     club: "",
     website: "",
@@ -19,13 +24,29 @@ const CreateProfile = ({ createProfile }) => {
   //makes the option to input social media fields a toggle
   const [displaySocialInputs, toggleSocialInputs] = useState(false);
 
+  useEffect(() => {
+    getCurrentProfile();
+    setRegisterData({
+      club: loading || !profile.club ? "" : profile.club,
+      website: loading || !profile.website ? "" : profile.website,
+      location: loading || !profile.location ? "" : profile.location,
+      //join needed for skills because they are a list of comma separated values
+      skills: loading || !profile.skills ? "" : profile.skills.join(","),
+      status: loading || !profile.status ? "" : profile.status,
+      bio: loading || !profile.bio ? "" : profile.bio,
+      twitter: loading || !profile.social ? "" : profile.social.twitter,
+      linkedin: loading || !profile.social ? "" : profile.social.linkedin,
+      instagram: loading || !profile.social ? "" : profile.social.instagram,
+      facebook: loading || !profile.social ? "" : profile.social.facebook,
+    });
+  }, [loading]);
+
   const {
     club,
     website,
     location,
     status,
     skills,
-    githubusername,
     bio,
     twitter,
     facebook,
@@ -35,9 +56,10 @@ const CreateProfile = ({ createProfile }) => {
 
   const onChange = (x) =>
     setRegisterData({ ...registerData, [x.target.name]: x.target.value });
+
   const onSubmit = (x) => {
     x.preventDefault();
-    createProfile(registerData, history, profile ? true : false);
+    createProfile(registerData, history, true);
   };
   return (
     <Fragment>
@@ -47,8 +69,7 @@ const CreateProfile = ({ createProfile }) => {
         profile!
       </p>
       <small>* = denotes required field</small>
-      <form className="form"
-      onSubmit={x=> onSubmit(x)}>
+      <form className="form" onSubmit={(x) => onSubmit(x)}>
         <div className="form-group">
           <select name="status" value={status} onChange={(x) => onChange(x)}>
             <option value="0">* Select your professional level</option>
@@ -183,9 +204,9 @@ const CreateProfile = ({ createProfile }) => {
             </div>
 
             <input type="submit" className="btn btn-primary my-1" />
-            <a className="btn btn-light my-1" href="/dashboard">
+            <Link className="btn btn-light my-1" href="/dashboard">
               Go Back
-            </a>
+            </Link>
           </Fragment>
         )}
       </form>
@@ -193,7 +214,7 @@ const CreateProfile = ({ createProfile }) => {
   );
 };
 
-CreateProfile.propTypes = {
+EditProfile.propTypes = {
   createProfile: PropTypes.func.isRequired,
   getCurrentProfile: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
@@ -201,6 +222,6 @@ CreateProfile.propTypes = {
 const linkStateToProps = (state) => ({
   profile: state.profile,
 });
-export default connect(linkStateToProps, { createProfile, withRouter(getCurrentProfile) })(
-  CreateProfile
+export default connect(linkStateToProps, { createProfile, getCurrentProfile })(
+  withRouter(EditProfile)
 );
