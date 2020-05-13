@@ -1,9 +1,14 @@
 import React, { useState, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { createProfile } from "../../actions/profile";
+import { createProfile, getCurrentProfile } from "../../actions/profile";
 import { Link, withRouter } from "react-router-dom";
-const CreateProfile = ({ createProfile }) => {
+const CreateProfile = ({
+  profile: { profile, loading },
+  createProfile,
+  getCurrentProfile,
+  history,
+}) => {
   const [registerData, setRegisterData] = useState({
     club: "",
     website: "",
@@ -25,7 +30,6 @@ const CreateProfile = ({ createProfile }) => {
     location,
     status,
     skills,
-    githubusername,
     bio,
     twitter,
     facebook,
@@ -47,8 +51,7 @@ const CreateProfile = ({ createProfile }) => {
         profile!
       </p>
       <small>* = denotes required field</small>
-      <form className="form"
-      onSubmit={x=> onSubmit(x)}>
+      <form className="form" onSubmit={(x) => onSubmit(x)}>
         <div className="form-group">
           <select name="status" value={status} onChange={(x) => onChange(x)}>
             <option value="0">* Select your professional level</option>
@@ -201,6 +204,6 @@ CreateProfile.propTypes = {
 const linkStateToProps = (state) => ({
   profile: state.profile,
 });
-export default connect(linkStateToProps, { createProfile, withRouter(getCurrentProfile) })(
+export default connect(linkStateToProps, { createProfile, getCurrentProfile })(
   CreateProfile
 );
