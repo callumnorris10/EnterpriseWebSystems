@@ -10,7 +10,6 @@ import {
   CLEAR_PROFILE,
 } from "./constants";
 import { setAlert } from "./alert";
-import setAuthorisationToken from "../utilities/setAuthorisationToken";
 
 // Load User
 export const loadUser = () => async (dispatch) => {
