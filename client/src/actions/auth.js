@@ -14,9 +14,6 @@ import setAuthorisationToken from "../utilities/setAuthorisationToken";
 
 // Load User
 export const loadUser = () => async (dispatch) => {
-  if (localStorage.token) {
-    setAuthorisationToken(localStorage.token);
-  }
   try {
     const res = await axios.get("/api/auth");
 

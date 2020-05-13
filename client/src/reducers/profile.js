@@ -34,7 +34,7 @@ export default function (state = initialState, action) {
         ...state,
         error: payload,
         loading: false,
-        profile: null,
+        profile: null, //add this to prevent the loaded profile persisting after viewing a profile
       };
     case CLEAR_PROFILE:
       return {

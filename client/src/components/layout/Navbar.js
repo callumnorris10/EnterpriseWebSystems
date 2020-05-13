@@ -5,20 +5,7 @@ import PropTypes from "prop-types";
 import { logout } from "../../actions/auth";
 
 const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
-  const notLoggedIn = (
-    <ul>
-      <li>
-        <Link to="/profiles">Coaches</Link>
-      </li>
-      <li>
-        <Link to="/register">Register</Link>
-      </li>
-      <li>
-        <Link to="/login">Login</Link>
-      </li>
-    </ul>
-  );
-  const authorisationLinks = (
+  const authLinks = (
     <ul>
       <li>
         <Link to="/profiles">Coaches</Link>
@@ -34,12 +21,27 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
       </li>
       <li>
         <a onClick={logout} href="#!">
-          <i className="fas fa-sign-out" />{" "}
+          <i className="fas fa-sign-out-alt" />{" "}
           <span className="hide-sm">Logout</span>
         </a>
       </li>
     </ul>
   );
+
+  const guestLinks = (
+    <ul>
+      <li>
+        <Link to="/profiles">Coaches</Link>
+      </li>
+      <li>
+        <Link to="/register">Register</Link>
+      </li>
+      <li>
+        <Link to="/login">Login</Link>
+      </li>
+    </ul>
+  );
+
   return (
     <nav className="navbar bg-dark">
       <h1>
@@ -48,9 +50,7 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
         </Link>
       </h1>
       {!loading && (
-        <Fragment>
-          {isAuthenticated ? authorisationLinks : notLoggedIn}
-        </Fragment>
+        <Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>
       )}
     </nav>
   );
@@ -60,7 +60,9 @@ Navbar.propTypes = {
   logout: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
 };
+
 const linkStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+  auth: state.auth,
 });
+
 export default connect(linkStateToProps, { logout })(Navbar);

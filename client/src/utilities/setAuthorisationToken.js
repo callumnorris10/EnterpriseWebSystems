@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const setAuthToken = (token) => {
+const setAuthorisationToken = (token) => {
   if (token) {
     axios.defaults.headers.common["x-auth-token"] = token;
     localStorage.setItem("token", token);
@@ -10,4 +10,4 @@ const setAuthToken = (token) => {
   }
 };
 
-export default setAuthToken;
+export default setAuthorisationToken;
