@@ -41,7 +41,7 @@ const CreateProfile = ({
     setRegisterData({ ...registerData, [x.target.name]: x.target.value });
   const onSubmit = (x) => {
     x.preventDefault();
-    createProfile(registerData, history, profile ? true : false);
+    createProfile(registerData, history, true);
   };
   return (
     <Fragment>
