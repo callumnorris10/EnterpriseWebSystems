@@ -4,42 +4,41 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { login } from "../../actions/auth";
 
-export const Login = ({ login, isAuthenticated }) => {
-  const [loginData, setloginData] = useState({
+const Login = ({ login, isAuthenticated }) => {
+  const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
 
   const { email, password } = loginData;
 
-  const onChange = (x) =>
-    setloginData({ ...loginData, [x.target.name]: x.target.value });
+  const onChange = (e) =>
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
 
-  const onSubmit = (x) => {
-    x.preventDefault();
+  const onSubmit = async (e) => {
+    e.preventDefault();
     login(email, password);
-    console.log("successful login");
   };
 
-  //redirect if logged in
   if (isAuthenticated) {
     return <Redirect to="/dashboard" />;
   }
 
   return (
     <Fragment>
-      <h1 className="large text-primary">Sign in</h1>
+      <h1 className="large text-primary">Sign In</h1>
       <p className="lead">
-        <i className="fas fa-user"></i> Log in to an existing account
+        <i className="fas fa-user" /> Sign Into Your Account
       </p>
-      <form className="form" onSubmit={onSubmit}>
+      <form className="form" onSubmit={(e) => onSubmit(e)}>
         <div className="form-group">
           <input
             type="email"
             placeholder="Email Address"
             name="email"
             value={email}
-            onChange={onChange}
+            onChange={(e) => onChange(e)}
+            required
           />
         </div>
         <div className="form-group">
@@ -48,13 +47,15 @@ export const Login = ({ login, isAuthenticated }) => {
             placeholder="Password"
             name="password"
             value={password}
-            onChange={onChange}
-            minLength="8"
+            onChange={(e) => onChange(e)}
+            minLength="6"
           />
         </div>
-
-        <input type="submit" className="btn btn-primary" value="login" />
+        <input type="submit" className="btn btn-primary" value="Login" />
       </form>
+      <p className="my-1">
+        Don't have an account? <Link to="/register">Sign Up</Link>
+      </p>
     </Fragment>
   );
 };

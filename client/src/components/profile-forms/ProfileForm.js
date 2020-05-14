@@ -1,28 +1,47 @@
-import React, { useState, Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
+import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { createProfile, getCurrentProfile } from "../../actions/profile";
-import { Link, withRouter } from "react-router-dom";
-const CreateProfile = ({
+
+const initialState = {
+  club: "",
+  website: "",
+  location: "",
+  status: "",
+  skills: "",
+  bio: "",
+  twitter: "",
+  facebook: "",
+  linkedin: "",
+  instagram: "",
+};
+
+const ProfileForm = ({
   profile: { profile, loading },
   createProfile,
   getCurrentProfile,
   history,
 }) => {
-  const [registerData, setRegisterData] = useState({
-    club: "",
-    website: "",
-    location: "",
-    status: "",
-    skills: "",
-    bio: "",
-    twitter: "",
-    facebook: "",
-    linkedin: "",
-    instagram: "",
-  });
-  //makes the option to input social media fields a toggle
+  const [registerData, setRegisterData] = useState(initialState);
+
   const [displaySocialInputs, toggleSocialInputs] = useState(false);
+
+  useEffect(() => {
+    if (!profile) getCurrentProfile();
+    if (!loading && profile) {
+      const profileData = { ...initialState };
+      for (const key in profile) {
+        if (key in profileData) profileData[key] = profile[key];
+      }
+      for (const key in profile.social) {
+        if (key in profileData) profileData[key] = profile.social[key];
+      }
+      if (Array.isArray(profileData.skills))
+        profileData.skills = profileData.skills.join(", ");
+      setRegisterData(profileData);
+    }
+  }, [loading, getCurrentProfile, profile]);
 
   const {
     club,
@@ -37,42 +56,42 @@ const CreateProfile = ({
     instagram,
   } = registerData;
 
-  const onChange = (x) =>
-    setRegisterData({ ...registerData, [x.target.name]: x.target.value });
-  const onSubmit = (x) => {
-    x.preventDefault();
+  const onChange = (e) =>
+    setRegisterData({ ...registerData, [e.target.name]: e.target.value });
+
+  const onSubmit = (e) => {
+    e.preventDefault();
     createProfile(registerData, history, true);
   };
+
   return (
     <Fragment>
-      <h1 className="large text-primary">Create Your Coaching Profile</h1>
+      <h1 className="large text-primary">Edit Your Profile</h1>
       <p className="lead">
-        <i className="fas fa-user"></i> Now add some information to your
-        profile!
+        <i className="fas fa-user" /> Add some changes to your profile
       </p>
-      <small>* = denotes required field</small>
-      <form className="form" onSubmit={(x) => onSubmit(x)}>
+      <small>* = required field</small>
+      <form className="form" onSubmit={onSubmit}>
         <div className="form-group">
-          <select name="status" value={status} onChange={(x) => onChange(x)}>
-            <option value="0">* Select your professional level</option>
-            <option value="Aspiring Coach">Aspiring Coach</option>
-            <option value="Uncertified Youth Coach">
-              Uncertified Youth Coach
+          <select name="status" value={status} onChange={onChange}>
+            <option>* Select Professional Level</option>
+            <option value="Amateur Coach">Amateur Coach</option>
+            <option value="Junior Coach">Junior Coach</option>
+            <option value="Senior Coach">Senior Coach</option>
+            <option value="SFA C License or equivalent">
+              SFA C License or equivalent
             </option>
-            <option value="Certified Youth Coach">Certified Youth Coach</option>
-            <option value="Certified Coach">Certified Coach</option>
-            <option value="Senior Certified Coach">
-              Senior Certified Coach
+            <option value="UEFA Pro License or equivalent">
+              UEFA A License or equivalent
             </option>
-            <option value="Senior UEFA A or equivalent level Coach">
-              Senior UEFA A or equivalent level Coach or Teacher
-            </option>
-            <option value="UEFA Pro License holder or equivalent">
-              UEFA Pro License holder or equivalent
+            <option value="UEFA Pro License or equivalent">
+              UEFA Pro License or equivalent
             </option>
             <option value="Other">Other</option>
           </select>
-          <small className="form-text">What level of coach are you</small>
+          <small className="form-text">
+            Give us an idea of where you are at in your career
+          </small>
         </div>
         <div className="form-group">
           <input
@@ -82,9 +101,10 @@ const CreateProfile = ({
             value={club}
             onChange={onChange}
           />
-          <small className="form-text">The club you work for</small>
+          <small className="form-text">
+            Could be your own club or one you work for
+          </small>
         </div>
-
         <div className="form-group">
           <input
             type="text"
@@ -94,10 +114,9 @@ const CreateProfile = ({
             onChange={onChange}
           />
           <small className="form-text">
-            Could be your own website or your clubs website
+            Could be your own or a club website
           </small>
         </div>
-
         <div className="form-group">
           <input
             type="text"
@@ -108,7 +127,6 @@ const CreateProfile = ({
           />
           <small className="form-text">City/town</small>
         </div>
-
         <div className="form-group">
           <input
             type="text"
@@ -117,65 +135,33 @@ const CreateProfile = ({
             value={skills}
             onChange={onChange}
           />
-          <small className="form-text">use comma separated values</small>
+          <small className="form-text">Please use comma separated values</small>
         </div>
-
         <div className="form-group">
           <textarea
-            placeholder="A short bio about you"
+            placeholder="A short bio of yourself"
             name="bio"
             value={bio}
             onChange={onChange}
-          ></textarea>
+          />
           <small className="form-text">Tell us a little about yourself</small>
         </div>
 
         <div className="my-2">
           <button
-            onClick
-            //asked to add spread operator
-            {...() => toggleSocialInputs(!displaySocialInputs)}
+            onClick={() => toggleSocialInputs(!displaySocialInputs)}
             type="button"
             className="btn btn-light"
           >
-            Add links to your social networks
+            Add Social Network Links
           </button>
-          <span>This section is optional</span>
+          <span>Optional</span>
         </div>
+
         {displaySocialInputs && (
           <Fragment>
             <div className="form-group social-input">
-              <i className="fab fa-facebook fa-2x"></i>
-              <input
-                type="text"
-                placeholder="Facebook URL"
-                name="facebook"
-                value={facebook}
-                onChange={onChange}
-              />
-            </div>
-            <div className="form-group social-input">
-              <i className="fab fa-instagram fa-2x"></i>
-              <input
-                type="text"
-                placeholder="Instagram URL"
-                name="instagram"
-                value={instagram}
-                onChange={onChange}
-              />
-            </div>
-            <div className="form-group social-input">
-              <i className="fab fa-linkedin fa-2x"></i>
-              <input
-                type="text"
-                placeholder="Linkedin URL"
-                name="linkedin"
-                value={linkedin}
-                onChange={onChange}
-              />
-            </div>
-            <div className="form-group social-input">
-              <i className="fab fa-twitter fa-2x"></i>
+              <i className="fab fa-twitter fa-2x" />
               <input
                 type="text"
                 placeholder="Twitter URL"
@@ -185,25 +171,60 @@ const CreateProfile = ({
               />
             </div>
 
-            <input type="submit" className="btn btn-primary my-1" />
-            <a className="btn btn-light my-1" href="/dashboard">
-              Go Back
-            </a>
+            <div className="form-group social-input">
+              <i className="fab fa-facebook fa-2x" />
+              <input
+                type="text"
+                placeholder="Facebook URL"
+                name="facebook"
+                value={facebook}
+                onChange={onChange}
+              />
+            </div>
+
+            <div className="form-group social-input">
+              <i className="fab fa-linkedin fa-2x" />
+              <input
+                type="text"
+                placeholder="Linkedin URL"
+                name="linkedin"
+                value={linkedin}
+                onChange={onChange}
+              />
+            </div>
+
+            <div className="form-group social-input">
+              <i className="fab fa-instagram fa-2x" />
+              <input
+                type="text"
+                placeholder="Instagram URL"
+                name="instagram"
+                value={instagram}
+                onChange={onChange}
+              />
+            </div>
           </Fragment>
         )}
+
+        <input type="submit" className="btn btn-primary my-1" />
+        <Link className="btn btn-light my-1" to="/dashboard">
+          Go Back
+        </Link>
       </form>
     </Fragment>
   );
 };
 
-CreateProfile.propTypes = {
+ProfileForm.propTypes = {
   createProfile: PropTypes.func.isRequired,
   getCurrentProfile: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
 };
+
 const linkStateToProps = (state) => ({
   profile: state.profile,
 });
+
 export default connect(linkStateToProps, { createProfile, getCurrentProfile })(
-  CreateProfile
+  withRouter(ProfileForm)
 );

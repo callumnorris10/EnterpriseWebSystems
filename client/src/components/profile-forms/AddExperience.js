@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { addExperience } from "../../actions/profile";
 
 const AddExperience = ({ addExperience, history }) => {
-  const [registerData, setRegisterData] = useState({
+  const [formData, setFormData] = useState({
     club: "",
     title: "",
     location: "",
@@ -17,18 +17,10 @@ const AddExperience = ({ addExperience, history }) => {
 
   const [toDateDisabled, toggleDisabled] = useState(false);
 
-  const {
-    club,
-    title,
-    location,
-    from,
-    to,
-    current,
-    description,
-  } = registerData;
+  const { club, title, location, from, to, current, description } = formData;
 
   const onChange = (x) =>
-    setRegisterData({ ...registerData, [x.target.name]: x.target.value });
+    setFormData({ ...formData, [x.target.name]: x.target.value });
 
   return (
     <Fragment>
@@ -42,7 +34,7 @@ const AddExperience = ({ addExperience, history }) => {
         className="form"
         onSubmit={(x) => {
           x.preventDefault();
-          addExperience(registerData, history);
+          addExperience(formData, history);
         }}
       >
         <div className="form-group">
@@ -91,7 +83,7 @@ const AddExperience = ({ addExperience, history }) => {
               checked={current}
               value={current}
               onChange={() => {
-                setRegisterData({ ...registerData, current: !current });
+                setFormData({ ...formData, current: !current });
                 toggleDisabled(!toDateDisabled);
               }}
             />{" "}
